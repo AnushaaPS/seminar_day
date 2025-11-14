@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Faculty - Mark Entry</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="common.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    .logout-btn {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  position: absolute;
+  top: 15px;
+  right: 20px;
+}
+.logout-btn:hover {
+  background-color: #e60000;
+}
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #e3f2fd, #e8f5e9);
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #0077b6;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    #welcome {
+      font-weight: 500;
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    #lockMsg {
+      text-align: center;
+      margin-bottom: 10px;
+      color: red;
+      font-weight: 600;
+    }
+
+    #teamSelectBox {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    select, button {
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    /* Default red button before save */
+    button {
+      background: #dc3545; /* red */
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    button:hover:not(:disabled) {
+      background: #c82333;
+      transform: scale(1.05);
+    }
+
+    button:disabled {
+      background: #aaa;
+      cursor: not-allowed;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      background: #fff;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background: #0077b6;
+      color: white;
+      font-weight: 500;
+    }
+
+    td select {
+      width: 100%;
+    }
+
+    /* ---------- Mobile Responsive (Card View) ---------- */
+    @media (max-width: 768px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+    h2 {
+      text-align: left;
+      color: #0077b6;
+      font-weight: 200;
+      margin-bottom: 10px;
+font-size: 20px;
+    }
+
+      thead {
+        display: none;
+      }
+
+      tr {
+        background: #ffffff;
+        margin-bottom: 15px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        padding: 15px;
+        animation: fadeInUp 0.4s ease;
+      }
+
+      td {
+        text-align: left !important;
+        padding: 10px 15px;
+        border: none !important;
+      }
+
+      td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #0077b6;
+        display: block;
+width: 100%;
+        margin-bottom: 4px;
+      }
+th {
+      background: #0077b6;
+      color: white;
+      font-weight: 500;
+width: 100%;
+    }
+
+      .btn {
+        width: 100%;
+        border-radius: 10px;
+        margin-top: 10px;
+      }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body onload="initFaculty()">
+  <h2><i class="bi bi-clipboard2-check"></i> Faculty - Mark Entry
+</h2>
+
+
+  <div id="welcome"></div>
+  <div id="lockMsg"></div>
+
+<button id="logoutBtn" class="logout-btn">Logout</button>
+
+  <div id="teamSelectBox">
+    <label><b><i class="bi bi-people-fill"></i> Select Team ID:</b></label>
+    <select id="teamSelect" class="form-select w-auto d-inline-block">
+      <option value="">-- Select Team --</option>
+    </select>
+  </div>
+
+  <table id="studentTable" style="display:none;">
+    <thead>
+      <tr>
+        <th rowspan="2">Team ID</th>
+        <th rowspan="2">Student Name</th>
+        <th rowspan="2">Department</th>
+        <th rowspan="2">Title</th>
+        <th colspan="4"><i class="bi bi-bar-chart-steps"></i> Level I (40 marks)</th>
+        <th colspan="2"><i class="bi bi-graph-up"></i> Level II (60 marks)</th>
+        <th rowspan="2">Total (100)</th>
+        <th rowspan="2">Action</th>
+      </tr>
+      <tr>
+        <th><i class="bi bi-bullseye"></i> Self-Introduction (10)</th>
+        <th><i class="bi bi-gear"></i> Presentation (10)</th>
+        <th><i class="bi bi-lightbulb"></i> Content (10)</th>
+        <th><i class="bi bi-question-circle"></i> Queries (10)</th>
+        <th><i class="bi bi-emoji-laughing"></i> Confidence (30)</th>
+        <th><i class="bi bi-chat-dots"></i> Communication (30)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+<script>
+setupLogout();
+const faculty_id = localStorage.getItem("faculty_id");
+const venue = localStorage.getItem("venue");
+const facultyName = localStorage.getItem("faculty_name");
+const batch = localStorage.getItem("batch");
+
+const level1Marks = { "Excellent":10,"Good":7.5,"Average":5,"Poor":2.5 };
+const level2Marks = { "Excellent":30,"Good":22.5,"Average":15, "Poor":7.5 };
+
+let students = [], existingMarks = [], locked = false;
+
+async function initFaculty() {
+  if (!faculty_id || !venue || !facultyName || !batch) {
+    alert("Unauthorized access! Please login again.");
+    window.location.href = "index.html"; return;
+  }
+
+  document.getElementById("welcome").innerHTML =
+    `🙏Welcome <b>${facultyName}</b> — 🏫Venue: <b>${venue}</b> — ⏳Batch: <b>${batch}</b>`;
+
+  const lockData = await postData("getLockStatus", { batch });
+  locked = (lockData.status === "Closed");
+  if (locked)
+    document.getElementById("lockMsg").innerHTML =
+      "<i class='bi bi-lock-fill'></i> Mark Entry Locked! You can only view marks.";
+
+  const studentRes = await postData("getStudents", { venue, batch });
+  students = (Array.isArray(studentRes) ? studentRes : []).map(s => ({
+    teamId: s.teamid || "",
+    s1Id: s.student1_id || "",
+    s1Name: s.student1_name || "",
+    s2Id: s.student2_id || "",
+    s2Name: s.student2_name || "",
+    dept: s.dept || "",
+    title: s.title || ""
+  }));
+
+  existingMarks = await postData("getFacultyMarks", { faculty_id, batch });
+  populateTeamDropdown();
+}
+
+function populateTeamDropdown() {
+  const teamSelect = document.getElementById("teamSelect");
+  teamSelect.innerHTML = `<option value="">-- Select Team --</option>`;
+  const uniqueTeams = [...new Set(students.map(s => s.teamId))];
+  uniqueTeams.forEach(tid => {
+    const opt = document.createElement("option");
+    opt.value = tid;
+    opt.textContent = tid;
+    teamSelect.appendChild(opt);
+  });
+  teamSelect.onchange = handleTeamChange;
+}
+
+function handleTeamChange() {
+  const selectedTeam = document.getElementById("teamSelect").value;
+  const tbody = document.querySelector("#studentTable tbody");
+  tbody.innerHTML = "";
+  if (!selectedTeam) return document.getElementById("studentTable").style.display="none";
+
+  const teamStudents = students.filter(s => s.teamId === selectedTeam);
+  teamStudents.forEach(st => {
+    if (st.s1Name) tbody.appendChild(createRow(st.teamId, st.s1Id, st.s1Name, st.dept, st.title));
+    if (st.s2Name) tbody.appendChild(createRow(st.teamId, st.s2Id, st.s2Name, st.dept, st.title));
+  });
+  document.getElementById("studentTable").style.display = "table";
+}
+
+function createRow(team_id, student_id, student_name, dept, title) {
+  const existing = existingMarks.find(m => String(m.student_id).trim() === String(student_id).trim());
+  const row = document.createElement("tr");
+
+  row.innerHTML = `
+    <td data-label="Team ID">${team_id}</td>
+    <td data-label="Student Name"><i class="bi bi-person-circle"></i> ${student_name}</td>
+    <td data-label="Department">${dept}</td>
+    <td data-label="Title"><i class="bi bi-cpu"></i> ${title}</td>
+    <td data-label="Self-Introduction"><select class="lvl1 form-select form-select-sm"><option>---</option><option>Excellent(10)</option><option>Good(7.5)</option><option>Average(5)</option><option>Poor(2.5)</option></select></td>
+    <td data-label="Presentaion"><select class="lvl1 form-select form-select-sm"><option>---</option><option>Excellent(10)</option><option>Good(7.5)</option><option>Average(5)</option><option>Poor(2.5)</option></select></td>
+    <td data-label="Content"><select class="lvl1 form-select form-select-sm"><option>---</option><option>Excellent(10)</option><option>Good(7.5)</option><option>Average(5)</option><option>Poor(2.5)</option></select></td>
+    <td data-label="Queries"><select class="lvl1 form-select form-select-sm"><option>---</option><option>Excellent(10)</option><option>Good(7.5)</option><option>Average(5)</option><option>Poor(2.5)</option></select></td>
+    <td data-label="Confidence"><select class="lvl2 form-select form-select-sm"><option>---</option><option>Excellent(30)</option><option>Good(22.5)</option><option>Average(15)</option><option>Poor(7.5)</option></select></td>
+    <td data-label="Communication"><select class="lvl2 form-select form-select-sm"><option>---</option><option>Excellent(30)</option><option>Good(22.5)</option><option>Average(15)</option><option>Poor(7.5)</option></select></td>
+    <td data-label="Total"><span class="badge bg-success total fs-6">0</span></td>
+    <td data-label="Action"><button class="btn"><i class="bi bi-save2"></i> Save</button></td>
+  `;
+
+  const btn = row.querySelector("button");
+  const selects = row.querySelectorAll("select");
+
+  if (existing) {
+    const l1vals = [existing.l1_1, existing.l1_2, existing.l1_3, existing.l1_4].map(v => Number(v)||0);
+    const l2vals = [existing.l2_1, existing.l2_2].map(v => Number(v)||0);
+    selects.forEach((sel, idx) => {
+      if (idx<4) sel.value = getKeyByValue(level1Marks, l1vals[idx]);
+      else sel.value = getKeyByValue(level2Marks, l2vals[idx-4]);
+    });
+  }
+
+  updateTotal(row);
+  if (locked) btn.disabled = true;
+  else btn.onclick = () => saveMarks(row, team_id, student_id, btn);
+
+  selects.forEach(s => s.addEventListener("change", () => {
+    updateTotal(row);
+    btn.style.backgroundColor = "#dc3545"; // back to red
+    btn.innerHTML = '<i class="bi bi-save2"></i> Save';
+  }));
+
+  return row;
+}
+
+function getKeyByValue(obj, val) {
+  val = Number(val);
+  return Object.keys(obj).find(k => obj[k] === val) || "---";
+}
+
+function updateTotal(row) {
+  const l1 = Array.from(row.querySelectorAll(".lvl1")).map(s => level1Marks[s.value]);
+  const l2 = Array.from(row.querySelectorAll(".lvl2")).map(s => level2Marks[s.value]);
+  const total = l1.reduce((a, b) => a + (b || 0), 0) + l2.reduce((a, b) => a + (b || 0), 0);
+  row.querySelector(".total").textContent = total > 0 ? total : "Absent";
+}
+
+async function saveMarks(row, team_id, student_id, btn) {
+  const selects = row.querySelectorAll("select");
+  const l1 = Array.from(row.querySelectorAll(".lvl1")).map(s => level1Marks[s.value]);
+  const l2 = Array.from(row.querySelectorAll(".lvl2")).map(s => level2Marks[s.value]);
+
+  const allEmpty = Array.from(selects).every(s => s.value === "---");
+  const anyEmpty = Array.from(selects).some(s => s.value === "---");
+
+  let total;
+
+  // Case 1: All dropdowns are ---
+  if (allEmpty) {
+    const confirmAbsent = confirm("Are you sure the student is marked as Absent?");
+    if (!confirmAbsent) return;
+    total = "Absent";
+
+    // Save as Absent (store total as 'Absent' and all categories 0)
+    await postData("saveMarks", {
+      faculty_id,
+      team_id,
+      student_id,
+      batch,
+      student_name: row.children[1].textContent,
+      dept: row.children[2].textContent,
+      venue,
+      l1_1: 0, l1_2: 0, l1_3: 0, l1_4: 0,
+      l2_1: 0, l2_2: 0,
+      total: "Absent"
+    });
+
+  } 
+  // Case 2: Some dropdowns are left ---
+  else if (anyEmpty) {
+    alert("Please fill all the fields before saving!");
+    return;
+  } 
+  // Case 3: All fields filled properly
+  else {
+    total = l1.reduce((a, b) => a + b, 0) + l2.reduce((a, b) => a + b, 0);
+
+    await postData("saveMarks", {
+      faculty_id,
+      team_id,
+      student_id,
+      batch,
+      student_name: row.children[1].textContent,
+      dept: row.children[2].textContent,
+      venue,
+      l1_1: l1[0], l1_2: l1[1], l1_3: l1[2], l1_4: l1[3],
+      l2_1: l2[0], l2_2: l2[1],
+      total
+    });
+  }
+
+  // ✅ Update the row visually
+  row.querySelector(".total").textContent = total;
+  btn.style.backgroundColor = "#28a745";
+  btn.innerHTML = '<i class="bi bi-check2-circle"></i> Saved';
+  btn.style.transform = "scale(1.1)";
+  setTimeout(() => btn.style.transform = "scale(1)", 300);
+
+  alert(
+    total === "Absent"
+      ? `Student ${student_id} marked as Absent.`
+      : `Marks saved for ${student_id} (${batch} batch).`
+  );
+}
+
+</script>
+</body>
+</html>

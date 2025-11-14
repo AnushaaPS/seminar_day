@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Seminar Mark System - Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="common.js"></script>
+
+  <!-- Bootstrap & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .login-container {
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+      width: 90%;
+      max-width: 380px;
+      padding: 30px;
+      text-align: center;
+      color: #2c3e50;
+      animation: fadeInUp 1s ease;
+    }
+
+    h2 {
+      font-weight: 700;
+      color: #1f4e79;
+      margin-bottom: 20px;
+    }
+
+    .input-box {
+      position: relative;
+      margin: 15px 0;
+    }
+
+    .input-box input {
+      width: 100%;
+      padding: 12px 40px 12px 45px;
+      border: none;
+      border-radius: 10px;
+      outline: none;
+      font-size: 15px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+      transition: 0.3s ease;
+    }
+
+    .input-box input:focus {
+      box-shadow: 0 0 10px rgba(0, 123, 255, 0.4);
+    }
+
+    .input-box i {
+      position: absolute;
+      top: 12px;
+      left: 15px;
+      color: #007bff;
+      font-size: 18px;
+    }
+
+    button {
+      background: linear-gradient(90deg, #28a745, #20c997);
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 12px 0;
+      width: 100%;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 16px;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(90deg, #20c997, #28a745);
+    }
+
+    #msg {
+      margin-top: 15px;
+      font-weight: 500;
+    }
+
+    /* Floating Background Animation */
+    .bubbles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    .bubbles span {
+      position: absolute;
+      display: block;
+      width: 20px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      animation: rise 10s infinite ease-in;
+      bottom: -150px;
+    }
+
+    .bubbles span:nth-child(1) { left: 10%; animation-delay: 0s; width: 25px; height: 25px; }
+    .bubbles span:nth-child(2) { left: 20%; animation-delay: 2s; width: 15px; height: 15px; }
+    .bubbles span:nth-child(3) { left: 40%; animation-delay: 4s; width: 30px; height: 30px; }
+    .bubbles span:nth-child(4) { left: 60%; animation-delay: 1s; width: 20px; height: 20px; }
+    .bubbles span:nth-child(5) { left: 80%; animation-delay: 3s; width: 25px; height: 25px; }
+
+    @keyframes rise {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-800px) scale(1.2); opacity: 0; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 480px) {
+      h2 { font-size: 22px; }
+      .login-container { padding: 25px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Background -->
+  <div class="bubbles">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <!-- Login Card -->
+  <div class="login-container">
+    <h2><i class="bi bi-lock-fill"></i> Seminar Day Login</h2>
+    <div class="input-box">
+      <i class="bi bi-person-circle"></i>
+      <input id="faculty_id" placeholder="Faculty ID" />
+    </div>
+    <div class="input-box">
+      <i class="bi bi-key-fill"></i>
+      <input id="password" type="password" placeholder="Password" />
+    </div>
+    <button onclick="login()"><i class="bi bi-box-arrow-in-right"></i> Login</button>
+    <p id="msg"></p>
+  </div>
+
+  <script>
+    async function login() {
+      const id = document.getElementById("faculty_id").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const msg = document.getElementById("msg");
+
+      if (!id || !password) {
+        msg.style.color = "red";
+        msg.textContent = "Please enter Faculty ID and Password!";
+        return;
+      }
+
+      msg.style.color = "#007bff";
+      msg.textContent = "Verifying... ⏳";
+
+      const res = await postData("login", { id, password });
+
+      if (res.status === "success") {
+        msg.style.color = "green";
+        msg.textContent = "Login successful! Redirecting... ✅";
+        localStorage.setItem("faculty_id", res.faculty_id);
+        localStorage.setItem("venue", res.venue);
+        localStorage.setItem("role", res.role);
+        localStorage.setItem("faculty_name", res.faculty_name);
+        localStorage.setItem("batch", res.batch);
+
+        setTimeout(() => {
+          if (res.role === "Admin") window.location = "admin.html";
+          else if (res.role === "VenueIncharge") window.location = "venue_incharge.html";
+          else window.location = "faculty.html";
+        }, 1200);
+      } else {
+        msg.style.color = "red";
+        msg.textContent = "Invalid login credentials ❌";
+      }
+    }
+    
+  </script>
+</body>
+</html>
