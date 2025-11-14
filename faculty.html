@@ -288,13 +288,13 @@ function createRow(team_id, student_id, student_name, dept, title) {
     <td data-label="Student Name"><i class="bi bi-person-circle"></i> ${student_name}</td>
     <td data-label="Department">${dept}</td>
     <td data-label="Title"><i class="bi bi-cpu"></i> ${title}</td>
-    <td data-label="Self-Introduction"><select class="lvl1 form-select form-select-sm"><option>---</option><option>Excellent(10)</option><option>Good(7.5)</option><option>Average(5)</option><option>Poor(2.5)</option></select></td>
-    <td data-label="Presentaion"><select class="lvl1 form-select form-select-sm"><option>---</option><option>Excellent(10)</option><option>Good(7.5)</option><option>Average(5)</option><option>Poor(2.5)</option></select></td>
-    <td data-label="Content"><select class="lvl1 form-select form-select-sm"><option>---</option><option>Excellent(10)</option><option>Good(7.5)</option><option>Average(5)</option><option>Poor(2.5)</option></select></td>
-    <td data-label="Queries"><select class="lvl1 form-select form-select-sm"><option>---</option><option>Excellent(10)</option><option>Good(7.5)</option><option>Average(5)</option><option>Poor(2.5)</option></select></td>
-    <td data-label="Confidence"><select class="lvl2 form-select form-select-sm"><option>---</option><option>Excellent(30)</option><option>Good(22.5)</option><option>Average(15)</option><option>Poor(7.5)</option></select></td>
-    <td data-label="Communication"><select class="lvl2 form-select form-select-sm"><option>---</option><option>Excellent(30)</option><option>Good(22.5)</option><option>Average(15)</option><option>Poor(7.5)</option></select></td>
-    <td data-label="Total"><span class="badge bg-success total fs-6">0</span></td>
+    <td data-label="Self-Introduction (10)"><select class="lvl1 form-select form-select-sm"><option>---</option><option>Excellent(10)</option><option>Good(7.5)</option><option>Average(5)</option><option>Poor(2.5)</option></select></td>
+    <td data-label="Presentaion (10)"><select class="lvl1 form-select form-select-sm"><option>---</option><option>Excellent(10)</option><option>Good(7.5)</option><option>Average(5)</option><option>Poor(2.5)</option></select></td>
+    <td data-label="Content (10)"><select class="lvl1 form-select form-select-sm"><option>---</option><option>Excellent(10)</option><option>Good(7.5)</option><option>Average(5)</option><option>Poor(2.5)</option></select></td>
+    <td data-label="Queries (10)"><select class="lvl1 form-select form-select-sm"><option>---</option><option>Excellent(10)</option><option>Good(7.5)</option><option>Average(5)</option><option>Poor(2.5)</option></select></td>
+    <td data-label="Confidence (30)"><select class="lvl2 form-select form-select-sm"><option>---</option><option>Excellent(30)</option><option>Good(22.5)</option><option>Average(15)</option><option>Poor(7.5)</option></select></td>
+    <td data-label="Communication (30)"><select class="lvl2 form-select form-select-sm"><option>---</option><option>Excellent(30)</option><option>Good(22.5)</option><option>Average(15)</option><option>Poor(7.5)</option></select></td>
+    <td data-label="Total (100)"><span class="badge bg-success total fs-6">0</span></td>
     <td data-label="Action"><button class="btn"><i class="bi bi-save2"></i> Save</button></td>
   `;
 
@@ -405,4 +405,5 @@ async function saveMarks(row, team_id, student_id, btn) {
 
 </script>
 </body>
+
 </html>
