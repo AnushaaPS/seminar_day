@@ -327,10 +327,17 @@
         styles: { font: "times", fontSize: 10, cellPadding: 4, halign: "center", valign: "middle" },
         headStyles: { fillColor: [240, 240, 240], textColor: 0 },
         columnStyles: { 3: { halign: "left" } },
-        didDrawPage: function () {
-          if (logoData) {
+        didDrawPage: function (data) {
+          if (data.pageNumber === 1 && logoData) {
             const logoWidth = 250, logoHeight = 50;
-            doc.addImage(logoData, "JPEG", (pageWidth - logoWidth) / 2, 20, logoWidth, logoHeight);
+    doc.addImage(
+      logoData,
+      "JPEG",
+      (pageWidth - logoWidth) / 2,
+      20,
+      logoWidth,
+      logoHeight
+    );
           }
         },
       });
@@ -360,4 +367,5 @@ if (sigY > pageHeight - 40) {
   </script>
 </body>
 </html>
+
 
